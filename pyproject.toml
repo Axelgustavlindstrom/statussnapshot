@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "statussnapshot"
+version = "0.1.0"
+description = "Snapshot and diff local development environment status."
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+keywords = ["cli", "environment", "git", "status"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Utilities",
+    "Topic :: System :: Utilities",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.scripts]
+statussnapshot = "statussnapshot.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["statussnapshot*"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+select = ["E", "F", "UP", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
