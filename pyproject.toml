@@ -36,3 +36,6 @@ select = ["E", "F", "UP", "I"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[project.urls]
+Repository = "https://github.com/Axelgustavlindstrom/statussnapshot"
