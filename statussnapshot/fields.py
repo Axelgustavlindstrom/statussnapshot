@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-
 TOOL_REGISTRY: dict[str, tuple[str, ...]] = {
     "py-version": ("python-version",),
     "python-path": ("python-path",),
@@ -19,7 +18,6 @@ TOOL_REGISTRY: dict[str, tuple[str, ...]] = {
 
 def probe_python(probe: str) -> dict[str, Any]:
     import shutil
-    import subprocess
 
     if probe == "py-version":
         return _probe_command_proc(shutil.which("python3"), ["--version"], "python-version")
@@ -33,7 +31,6 @@ def probe_python(probe: str) -> dict[str, Any]:
 
 def probe_node(probe: str) -> dict[str, Any]:
     import shutil
-    import subprocess
 
     node = shutil.which("node")
     npm = shutil.which("npm")
@@ -46,18 +43,25 @@ def probe_node(probe: str) -> dict[str, Any]:
 
 def probe_git(directory: Path, probe: str) -> dict[str, Any]:
     import shutil
-    import subprocess
 
     git = shutil.which("git")
     if not git:
         return {"_missing": True, probe.replace("-", "_"): None}
-    args = [git, "-C", str(directory)]
     if probe == "git-branch":
-        return _probe_command_proc(git, ["-C", str(directory), "rev-parse", "--abbrev-ref", "HEAD"], "git-branch")
+        return _probe_command_proc(
+            git, ["-C", str(directory), "rev-parse", "--abbrev-ref", "HEAD"],
+            "git-branch",
+        )
     if probe == "git-dirty":
-        return _probe_command_proc(git, ["-C", str(directory), "status", "--porcelain"], "git-dirty")
+        return _probe_command_proc(
+            git, ["-C", str(directory), "status", "--porcelain"],
+            "git-dirty",
+        )
     if probe == "last-commit":
-        return _probe_command_proc(git, ["-C", str(directory), "rev-parse", "--short", "HEAD"], "last-commit")
+        return _probe_command_proc(
+            git, ["-C", str(directory), "rev-parse", "--short", "HEAD"],
+            "last-commit",
+        )
     return {}
 
 

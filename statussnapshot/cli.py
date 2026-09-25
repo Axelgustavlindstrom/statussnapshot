@@ -12,17 +12,37 @@ from statussnapshot.reporters import render_summary_snapshot
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="statussnapshot", description="Snapshot and diff local environment status.")
+    parser = argparse.ArgumentParser(
+        prog="statussnapshot",
+        description="Snapshot and diff local environment status.",
+    )
     subparsers = parser.add_subparsers(dest="command")
 
-    capture = subparsers.add_parser("capture", help="Capture environment snapshot from a directory.")
-    capture.add_argument("--directory", default=".", help="Target directory containing projects to inspect.")
-    capture.add_argument("--field", action="append", dest="fields", help="Field to capture; repeat for multiple fields.")
-    capture.add_argument("--output", default="statussnapshot.json", help="Path to write snapshot JSON.")
-    capture.add_argument("--overwrite", action="store_true", help="Overwrite existing snapshot output.")
+    capture = subparsers.add_parser(
+        "capture", help="Capture environment snapshot from a directory."
+    )
+    capture.add_argument(
+        "--directory", default=".", help="Target directory containing projects to inspect."
+    )
+    capture.add_argument(
+        "--field", action="append", dest="fields",
+        help="Field to capture; repeat for multiple fields.",
+    )
+    capture.add_argument(
+        "--output", default="statussnapshot.json",
+        help="Path to write snapshot JSON.",
+    )
+    capture.add_argument(
+        "--overwrite", action="store_true",
+        help="Overwrite existing snapshot output.",
+    )
 
-    show = subparsers.add_parser("show", help="Show stored snapshot contents.")
-    show.add_argument("path", default="statussnapshot.json", nargs="?")
+    show = subparsers.add_parser(
+        "show", help="Show stored snapshot contents.",
+    )
+    show.add_argument(
+        "path", default="statussnapshot.json", nargs="?",
+    )
 
     diff = subparsers.add_parser("diff", help="Diff two snapshots.")
     diff.add_argument("old", default="prev.json", nargs="?")
@@ -58,7 +78,10 @@ def show(command_args: argparse.Namespace) -> int:
         return 1
     snapshot = load_snapshot(path)
     for entry in snapshot.entries:
-        details = ", ".join(f"{k}={v}" for k, v in sorted(entry.items()) if k not in {"origin", "captured_at", "updated_at"})
+        details = ", ".join(
+            f"{k}={v}" for k, v in sorted(entry.items())
+            if k not in {"origin", "captured_at", "updated_at"}
+        )
         print(f"{entry['tool']}: {details}")
     return 0
 

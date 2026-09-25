@@ -42,8 +42,12 @@ def test_diff_missing_snapshot_returns_one(tmp_path: Path):
 def test_diff_snapshots_renders_changes(tmp_path: Path):
     old = tmp_path / "old.json"
     new = tmp_path / "new.json"
-    old.write_text('{"origin": ".", "captured_at": "", "entries": [{"tool": "python", "version": "3.10"}]}')
-    new.write_text('{"origin": ".", "captured_at": "", "entries": [{"tool": "python", "version": "3.11"}]}')
+    old.write_text(
+        '{"origin": ".", "captured_at": "", "entries": [{"tool": "python", "version": "3.10"}]}'
+    )
+    new.write_text(
+        '{"origin": ".", "captured_at": "", "entries": [{"tool": "python", "version": "3.11"}]}'
+    )
     stdout = io.StringIO()
     with contextlib.redirect_stdout(stdout):
         rc = main(["diff", str(old), str(new)])
@@ -59,5 +63,10 @@ def test_render_summary_snapshot_empty():
 
 
 def test_render_summary_snapshot_changes():
-    rendered = render_summary_snapshot([type("DiffRecord", (), {"tool": "python", "key": "version", "old_value": "3.10", "new_value": "3.11"})()])
+    rendered = render_summary_snapshot([
+        type("DiffRecord", (), {
+            "tool": "python", "key": "version",
+            "old_value": "3.10", "new_value": "3.11",
+        })(),
+    ])
     assert "3.10 -> 3.11" in rendered.body

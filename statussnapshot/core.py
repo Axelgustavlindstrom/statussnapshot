@@ -48,18 +48,30 @@ class Snapshot:
         old_map: dict[str, dict[str, object]] = {}
         for entry in (previous.entries if previous and previous.entries else []):
             if "tool" in entry:
-                old_map[entry["tool"]] = {k: v for k, v in entry.items() if k not in self.MISSING_KEYS}
+                old_map[entry["tool"]] = {
+                    k: v for k, v in entry.items()
+                    if k not in self.MISSING_KEYS
+                }
         new_map: dict[str, dict[str, object]] = {}
         for entry in (self.entries if self.entries else []):
             if "tool" in entry:
-                new_map[entry["tool"]] = {k: v for k, v in entry.items() if k not in self.MISSING_KEYS}
+                new_map[entry["tool"]] = {
+                    k: v for k, v in entry.items()
+                    if k not in self.MISSING_KEYS
+                }
 
         diffs: list[DiffRecord] = []
         for tool, new_fields in new_map.items():
             old_fields = old_map.get(tool, {})
             for key, value in new_fields.items():
                 if value != old_fields.get(key):
-                    diffs.append(DiffRecord(tool=tool, key=str(key), old_value=old_fields.get(key), new_value=value, event="added", updated_at=self.captured_at))
+                    diffs.append(DiffRecord(
+                        tool=tool, key=str(key),
+                        old_value=old_fields.get(key),
+                        new_value=value,
+                        event="added",
+                        updated_at=self.captured_at,
+                    ))
         return diffs
 
 
@@ -71,12 +83,20 @@ def load_snapshot(path: Path) -> Snapshot:
         origin = entries[0].get("origin", ".") if entries else "."
         return Snapshot(origin=origin, entries=entries)
     entries = [dict(entry) for entry in data.get("entries", [])]
-    return Snapshot(origin=str(data.get("origin", ".")), captured_at=str(data.get("captured_at", "")), entries=entries)
+    return Snapshot(
+        origin=str(data.get("origin", ".")),
+        captured_at=str(data.get("captured_at", "")),
+        entries=entries,
+    )
 
 
 def save_snapshot(snapshot: Snapshot, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    data = {"origin": snapshot.origin, "captured_at": snapshot.captured_at, "entries": snapshot.entries}
+    data = {
+        "origin": snapshot.origin,
+        "captured_at": snapshot.captured_at,
+        "entries": snapshot.entries,
+    }
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
